@@ -131,7 +131,7 @@ Pre-styled, ready-to-use interactive widgets:
 | `Drawer` | Slide-out panel for navigation |
 | `ToastManager` | Notification system |
 
-## 🎨 Styling System
+##  Styling System
 
 NEUI uses a simple dictionary-based styling system:
 
@@ -161,7 +161,7 @@ style = {
 }
 ```
 
-## 🏗️ Layout Examples
+## Layout Examples
 
 ### Row Layout (Horizontal)
 ```python
@@ -191,18 +191,18 @@ with ui.Box(style={"layout": "col", "gap": 20}):
     ui.Text("Footer")
 ```
 
-## 🎯 Examples
+## Examples
 
 Check out the `examples/` directory for complete working examples:
 
 - **form_example.py** - Comprehensive registration form with all input types
 - More examples coming soon!
 
-## 📖 Documentation
+## Documentation
 
 For detailed documentation including API reference and advanced usage, see [DOCUMENTATION.md](DOCUMENTATION.md).
 
-## 🛠️ Development
+## Development
 
 ```bash
 # Clone the repository
@@ -216,30 +216,23 @@ pip install -e .
 python examples/form_example.py
 ```
 
-## 🐛 Known Limitations
+## Known Limitations
 
 - Currently Windows-only (macOS and Linux support planned)
 - No built-in text wrapping (manual line breaks required)
 - Limited to OpenGL-compatible systems
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## 👤 Author
+## Author
 
 **Jalpan Vyas**  
 Email: vyasjalpan1202@gmail.com  
 GitHub: [@Jalpan04](https://github.com/Jalpan04)
 
-## ⭐ Show Your Support
-
-Give a ⭐️ if this project helped you!
-
----
-
-Built with Python, Skia, and GLFW
