@@ -32,6 +32,11 @@ class Element:
         for child in self.children:
             child.render(canvas, renderer)
             
+    def animate(self, properties, duration=0.3, easing=None, on_complete=None):
+        from neui.core.animation import animation_manager, Animation
+        anim = Animation(self, properties, duration, easing, on_complete)
+        animation_manager.add(anim)
+            
     def __enter__(self):
         # Context manager support for nesting
         # We need a global context stack or similar to know who the parent is?

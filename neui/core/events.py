@@ -13,6 +13,7 @@ class EventManager:
         # Callbacks
         glfw.set_key_callback(self.window, self._on_key)
         glfw.set_char_callback(self.window, self._on_char)
+        glfw.set_scroll_callback(self.window, self._on_scroll)
 
     def _on_key(self, window, key, scancode, action, mods):
         if self.focused_element:
@@ -28,14 +29,32 @@ class EventManager:
         if self.focused_element:
             self._dispatch(self.focused_element, 'on_char', codepoint=codepoint)
 
-    def process_events(self, root):
-        if not root: return
+    def _on_scroll(self, window, xoffset, yoffset):
+        # Dispatch to hovered element first, then bubble up
+        target = self.hovered_element or self.focused_element
+        if target:
+            self._dispatch(target, 'on_scroll', dx=xoffset, dy=yoffset)
+
+    def process_events(self, root, overlays=None):
+        if not root and not overlays: return
 
         x, y = glfw.get_cursor_pos(self.window)
         mouse_state = glfw.get_mouse_button(self.window, glfw.MOUSE_BUTTON_LEFT)
         
         # 1. Hit Test
-        target = self._hit_test(root, x, y)
+        target = None
+        
+        # Check overlays first (reverse order - top most first)
+        if overlays:
+            for overlay in reversed(overlays):
+                hit = self._hit_test(overlay, x, y)
+                if hit:
+                    target = hit
+                    break
+        
+        # If no overlay hit, check root
+        if not target and root:
+            target = self._hit_test(root, x, y)
         
         # 2. Hover Events
         if target != self.hovered_element:
@@ -70,7 +89,7 @@ class EventManager:
                     self._dispatch(self.focused_element, 'on_focus')
 
             if target:
-                self._dispatch(target, 'on_mouse_down')
+                self._dispatch(target, 'on_mouse_down', x=x, y=y)
         
         elif mouse_state == glfw.RELEASE and self.last_mouse_state == glfw.PRESS:
             # Mouse Up

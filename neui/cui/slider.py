@@ -19,15 +19,9 @@ class Slider(Element):
         self.on_change = on_change
         self.dragging = False
 
-    def on_mouse_down(self):
+    def on_mouse_down(self, x=0, y=0):
         self.dragging = True
-        # We need to update value immediately on click too (jump to pos)
-        # But we don't have x,y here easily unless passed?
-        # EventManager dispatches on_mouse_down without args currently.
-        # We should update EventManager to pass x,y to mouse down too?
-        # Or just wait for first move?
-        # Let's update EventManager to pass x,y to mouse down.
-        pass
+        self._update_value_from_pos(x)
 
     def on_mouse_up(self):
         self.dragging = False

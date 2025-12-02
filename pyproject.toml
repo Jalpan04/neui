@@ -4,15 +4,27 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neui"
-version = "0.1.1"
-description = "A modern, GPU-accelerated Python UI framework."
+version = "0.2.0"
+description = "A modern, GPU-accelerated Python UI framework with Flexbox-like layouts, reactive events, and beautiful default styling. Build desktop applications with the simplicity of web frameworks."
 readme = "README.md"
 authors = [
-  { name = "NEUI Team", email = "user@example.com" },
+  { name = "Jalpan Vyas", email = "vyasjalpan1202@gmail.com" },
 ]
 license = { file = "LICENSE" }
+keywords = ["ui", "gui", "framework", "gpu", "skia", "glfw", "desktop", "flexbox", "layout", "modern"]
 classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Software Development :: Libraries :: Python Modules",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
@@ -23,5 +35,7 @@ dependencies = [
 requires-python = ">=3.7"
 
 [project.urls]
-"Homepage" = "https://github.com/example/neui"
-"Bug Tracker" = "https://github.com/example/neui/issues"
+"Homepage" = "https://github.com/Jalpan04/neui"
+"Bug Tracker" = "https://github.com/Jalpan04/neui/issues"
+"Documentation" = "https://github.com/Jalpan04/neui#readme"
+"Source Code" = "https://github.com/Jalpan04/neui"

@@ -31,7 +31,7 @@ class Button(Box):
     def on_mouse_leave(self):
         self.style['bg'] = self.normal_bg
 
-    def on_mouse_down(self):
+    def on_mouse_down(self, x=0, y=0):
         self.style['bg'] = self.pressed_bg
 
     def on_mouse_up(self):

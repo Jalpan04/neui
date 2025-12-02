@@ -2,7 +2,8 @@ from .element import Element
 from .box import Box
 from .text import Text
 from .input import Input
-from .area import Area
 from .image import Image
+from .scrollview import ScrollView
+from .area import Area
 
-class Window(Element): pass # Wrapper?
+class Window(Element): pass

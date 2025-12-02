@@ -1,124 +1,245 @@
 # NEUI (Neo UI)
 
-**NEUI** is a modern, GPU-accelerated Python UI framework. It features a custom Flexbox-like layout engine, a React-inspired event system, and beautiful default styling.
+**NEUI** is a modern, GPU-accelerated Python UI framework featuring a Flexbox-like layout engine, reactive event system, and beautiful default styling. Build desktop applications with the simplicity of web frameworks.
 
-## Features
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 
-*   **Modern Look**: Dark mode by default, rounded corners, and smooth rendering.
-*   **Flexbox Layout**: Easy `row` and `col` layouts with `justify`, `align`, and `gap`.
-*   **GPU Accelerated**: Built on `skia-python` and `glfw` for high performance.
-*   **Interactive**: Built-in support for Hover, Click, Focus, and Drag events.
-*   **Components**:
-    *   `Box`, `Text`, `Input`
-    *   `Button`, `Card`, `Toggle`, `Slider`
+## ✨ Features
 
-## Installation
+- **🎨 Modern Look**: Dark mode by default, rounded corners, smooth GPU-accelerated rendering
+- **📐 Flexbox Layout**: Intuitive `row` and `col` layouts with `justify`, `align`, and `gap` properties
+- **⚡ GPU Accelerated**: Built on `skia-python` and `glfw` for high-performance rendering
+- **🖱️ Interactive**: Full event system with Hover, Click, Focus, Blur, and Keyboard events
+- **🧩 Rich Components**: Pre-built UI and interactive components ready to use
+- **🐍 Pythonic API**: Context managers (`with` statements) for clean, nested layouts
+- **🎯 Zero Boilerplate**: Minimal setup, maximum productivity
+
+## 📦 Installation
 
 ```bash
 pip install neui
 ```
 
-## Quick Start: Calculator App
+## 🚀 Quick Start: Registration Form
 
 ```python
 from neui import App, ui, cui
 
-class CalculatorApp:
+class FormApp:
     def __init__(self):
-        self.display_text = "0"
-        self.display_element = None
-        self.current_op = None
-        self.prev_val = 0
-        self.new_entry = True
+        self.name_input = None
+        self.email_input = None
+        self.result_text = None
 
-    def on_digit(self, digit):
-        if self.new_entry:
-            self.display_text = str(digit)
-            self.new_entry = False
-        else:
-            self.display_text += str(digit)
-        self.update_display()
-
-    def on_op(self, op):
-        self.prev_val = float(self.display_text)
-        self.current_op = op
-        self.new_entry = True
-
-    def on_equal(self):
-        if self.current_op:
-            curr = float(self.display_text)
-            if self.current_op == '+': res = self.prev_val + curr
-            elif self.current_op == '-': res = self.prev_val - curr
-            elif self.current_op == '*': res = self.prev_val * curr
-            elif self.current_op == '/': res = self.prev_val / curr if curr != 0 else 0
-            
-            if res.is_integer():
-                self.display_text = str(int(res))
-            else:
-                self.display_text = str(res)
-            
-            self.current_op = None
-            self.new_entry = True
-            self.update_display()
-
-    def on_clear(self):
-        self.display_text = "0"
-        self.current_op = None
-        self.prev_val = 0
-        self.new_entry = True
-        self.update_display()
-
-    def update_display(self):
-        if self.display_element:
-            self.display_element.text = self.display_text
-            length = len(self.display_text)
-            if length > 10:
-                self.display_element.style['font_size'] = max(20, 40 - (length - 10) * 2)
-            else:
-                self.display_element.style['font_size'] = 40
+    def on_submit(self):
+        name = self.name_input.text if self.name_input else "N/A"
+        email = self.email_input.text if self.email_input else "N/A"
+        
+        if self.result_text:
+            self.result_text.text = f"Name: {name}\\nEmail: {email}"
+            print(f"Form submitted: {name}, {email}")
 
     def build(self):
-        app = App(title="NEUI Calculator", width=360, height=550)
+        app = App(title="NEUI Form Example", width=600, height=400)
         
-        with ui.Box(style={"bg": "#121212", "w": "100%", "h": "100%", "padding": 20, "layout": "col", "gap": 15}) as root:
+        with ui.Box(style={
+            "bg": "#0D1117",
+            "w": "100%",
+            "h": "100%",
+            "padding": 30,
+            "layout": "col",
+            "gap": 20
+        }) as root:
             
-            # Display
-            with cui.Card(style={"w": "100%", "h": 100, "bg": "#1E1E1E", "justify": "end", "align": "end", "padding": 20}):
-                self.display_element = ui.Text("0", style={"font_size": 40, "color": "white", "weight": "bold"})
-
-            # Keypad
-            rows = [
-                ['7', '8', '9', '/'],
-                ['4', '5', '6', '*'],
-                ['1', '2', '3', '-'],
-                ['C', '0', '=', '+']
-            ]
+            # Header
+            ui.Text("User Registration", style={
+                "font_size": 32,
+                "color": "#58A6FF",
+                "weight": "bold"
+            })
             
-            for row in rows:
-                with ui.Box(style={"layout": "row", "gap": 12, "w": "100%", "h": 70}):
-                    for key in row:
-                        color = "#333333"
-                        if key in ['/', '*', '-', '+', '=']: color = "#FF9F0A"
-                        if key == 'C': color = "#A5A5A5"
-                        
-                        def make_handler(k):
-                            if k.isdigit(): return lambda: self.on_digit(int(k))
-                            if k in ['+', '-', '*', '/']: return lambda: self.on_op(k)
-                            if k == '=': return self.on_equal
-                            if k == 'C': return self.on_clear
-                            return None
-
-                        cui.Button(key, on_click=make_handler(key), 
-                                   style={"w": 70, "h": 70, "bg": color, "radius": 35, "font_size": 28})
+            # Form Card
+            with cui.Card(style={
+                "w": "100%",
+                "bg": "#161B22",
+                "padding": 25,
+                "radius": 8,
+                "layout": "col",
+                "gap": 15
+            }):
+                ui.Text("Name", style={"font_size": 14, "color": "#C9D1D9"})
+                self.name_input = ui.Input(
+                    placeholder="Enter your name",
+                    style={"w": "100%", "bg": "#0D1117", "radius": 6}
+                )
+                
+                ui.Text("Email", style={"font_size": 14, "color": "#C9D1D9"})
+                self.email_input = ui.Input(
+                    placeholder="your.email@example.com",
+                    style={"w": "100%", "bg": "#0D1117", "radius": 6}
+                )
+            
+            # Submit Button
+            cui.Button(
+                "Submit",
+                on_click=self.on_submit,
+                style={"w": 120, "h": 40, "bg": "#238636", "radius": 6}
+            )
+            
+            # Result Display
+            with cui.Card(style={"w": "100%", "bg": "#161B22", "padding": 20}):
+                ui.Text("Form Data:", style={"font_size": 16, "color": "#58A6FF"})
+                self.result_text = ui.Text(
+                    "Fill out the form and click Submit",
+                    style={"font_size": 12, "color": "#8B949E"}
+                )
 
         app.add(root)
         app.run()
 
 if __name__ == "__main__":
-    calc = CalculatorApp()
-    calc.build()
+    form = FormApp()
+    form.build()
 ```
 
-## License
+## 📚 Component Library
 
-MIT
+### UI Components (`neui.ui`)
+Basic building blocks for your interface:
+
+| Component | Description |
+|-----------|-------------|
+| `Box` | Container for layout with flexbox-like properties |
+| `Text` | Render text with custom styling |
+| `Input` | Text input field with placeholder and password mode |
+| `Image` | Display images |
+| `ScrollView` | Scrollable container for overflow content |
+
+### Interactive Components (`neui.cui`)
+Pre-styled, ready-to-use interactive widgets:
+
+| Component | Description |
+|-----------|-------------|
+| `Button` | Clickable button with hover/press states |
+| `Card` | Container with built-in elevation and styling |
+| `Checkbox` | Toggle checkbox with label |
+| `Radio` | Radio button with group support |
+| `Slider` | Range slider for numeric input |
+| `Toggle` | Switch-style boolean input |
+| `ProgressBar` | Visual progress indicator |
+| `Drawer` | Slide-out panel for navigation |
+| `ToastManager` | Notification system |
+
+## 🎨 Styling System
+
+NEUI uses a simple dictionary-based styling system:
+
+```python
+style = {
+    # Layout
+    "layout": "row",      # or "col"
+    "gap": 10,            # spacing between children
+    "padding": 20,        # internal spacing
+    "align": "center",    # vertical alignment
+    "justify": "start",   # horizontal alignment
+    
+    # Dimensions
+    "w": 200,             # width (px or "100%")
+    "h": 50,              # height
+    
+    # Appearance
+    "bg": "#0D1117",      # background color (hex)
+    "color": "white",     # text color
+    "radius": 8,          # border radius
+    "border_color": "#333",
+    "border_width": 1,
+    
+    # Typography
+    "font_size": 14,
+    "weight": "bold",
+}
+```
+
+## 🏗️ Layout Examples
+
+### Row Layout (Horizontal)
+```python
+with ui.Box(style={"layout": "row", "gap": 10}):
+    cui.Button("Button 1")
+    cui.Button("Button 2")
+    cui.Button("Button 3")
+```
+
+### Column Layout (Vertical)
+```python
+with ui.Box(style={"layout": "col", "gap": 15}):
+    ui.Text("Item 1")
+    ui.Text("Item 2")
+    ui.Text("Item 3")
+```
+
+### Nested Layouts
+```python
+with ui.Box(style={"layout": "col", "gap": 20}):
+    ui.Text("Header", style={"font_size": 24})
+    
+    with ui.Box(style={"layout": "row", "gap": 10}):
+        cui.Button("Left")
+        cui.Button("Right")
+    
+    ui.Text("Footer")
+```
+
+## 🎯 Examples
+
+Check out the `examples/` directory for complete working examples:
+
+- **form_example.py** - Comprehensive registration form with all input types
+- More examples coming soon!
+
+## 📖 Documentation
+
+For detailed documentation including API reference and advanced usage, see [DOCUMENTATION.md](DOCUMENTATION.md).
+
+## 🛠️ Development
+
+```bash
+# Clone the repository
+git clone https://github.com/Jalpan04/neui.git
+cd neui
+
+# Install in editable mode
+pip install -e .
+
+# Run examples
+python examples/form_example.py
+```
+
+## 🐛 Known Limitations
+
+- Currently Windows-only (macOS and Linux support planned)
+- No built-in text wrapping (manual line breaks required)
+- Limited to OpenGL-compatible systems
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 👤 Author
+
+**Jalpan Vyas**  
+Email: vyasjalpan1202@gmail.com  
+GitHub: [@Jalpan04](https://github.com/Jalpan04)
+
+## ⭐ Show Your Support
+
+Give a ⭐️ if this project helped you!
+
+---
+
+Built with ❤️ using Python, Skia, and GLFW
