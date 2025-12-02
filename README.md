@@ -1,27 +1,27 @@
-# NEUI (Neo UI)
+# NEUI
 
 **NEUI** is a modern, GPU-accelerated Python UI framework featuring a Flexbox-like layout engine, reactive event system, and beautiful default styling. Build desktop applications with the simplicity of web frameworks.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 
-## ✨ Features
+## Features
 
-- **🎨 Modern Look**: Dark mode by default, rounded corners, smooth GPU-accelerated rendering
-- **📐 Flexbox Layout**: Intuitive `row` and `col` layouts with `justify`, `align`, and `gap` properties
-- **⚡ GPU Accelerated**: Built on `skia-python` and `glfw` for high-performance rendering
-- **🖱️ Interactive**: Full event system with Hover, Click, Focus, Blur, and Keyboard events
-- **🧩 Rich Components**: Pre-built UI and interactive components ready to use
-- **🐍 Pythonic API**: Context managers (`with` statements) for clean, nested layouts
-- **🎯 Zero Boilerplate**: Minimal setup, maximum productivity
+- **Modern Look**: Dark mode by default, rounded corners, smooth GPU-accelerated rendering
+- **Flexbox Layout**: Intuitive `row` and `col` layouts with `justify`, `align`, and `gap` properties
+- **GPU Accelerated**: Built on `skia-python` and `glfw` for high-performance rendering
+- **Interactive**: Full event system with Hover, Click, Focus, Blur, and Keyboard events
+- **Rich Components**: Pre-built UI and interactive components ready to use
+- **Pythonic API**: Context managers (`with` statements) for clean, nested layouts
+- **Zero Boilerplate**: Minimal setup, maximum productivity
 
-## 📦 Installation
+## Installation
 
 ```bash
 pip install neui
 ```
 
-## 🚀 Quick Start: Registration Form
+## Quick Start: Registration Form
 
 ```python
 from neui import App, ui, cui
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     form.build()
 ```
 
-## 📚 Component Library
+## Component Library
 
 ### UI Components (`neui.ui`)
 Basic building blocks for your interface:
@@ -242,4 +242,4 @@ Give a ⭐️ if this project helped you!
 
 ---
 
-Built with ❤️ using Python, Skia, and GLFW
+Built with Python, Skia, and GLFW
