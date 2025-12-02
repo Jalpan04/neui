@@ -22,6 +22,14 @@ class Toggle(Box):
         if self.on_change:
             self.on_change(self.checked)
 
+    @property
+    def value(self):
+        return self.checked
+
+    @value.setter
+    def value(self, val):
+        self.checked = val
+
     def render(self, canvas, renderer):
         # 1. Draw Track (Background)
         bg_color = self.style['bg_on'] if self.checked else self.style['bg_off']

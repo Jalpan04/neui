@@ -9,22 +9,79 @@ class ScrollView(Box):
         self.content_height = 0
         self.content_width = 0
         
+        # Scrollbar interaction state
+        self.is_dragging_scrollbar = False
+        self.drag_start_y = 0
+        self.scroll_start_y = 0
+        self.scrollbar_hovered = False
+        
         # Default style
         if 'overflow' not in self.style: self.style['overflow'] = 'hidden'
+        if 'scrollbar_width' not in self.style: self.style['scrollbar_width'] = 10
+        if 'scrollbar_color' not in self.style: self.style['scrollbar_color'] = '#ffffff40'
+        if 'scrollbar_hover_color' not in self.style: self.style['scrollbar_hover_color'] = '#ffffff80'
 
     def on_scroll(self, dx, dy):
         # dy is usually +/- 1.0 per tick
         scroll_speed = 20
-        self.scroll_y -= dy * scroll_speed
-        self.scroll_x -= dx * scroll_speed
         
-        # Clamp
+        # Vertical Scroll
+        if self.style.get('overflow_y', 'auto') != 'hidden':
+            self.scroll_y -= dy * scroll_speed
+            self._clamp_scroll()
+            
+        # Horizontal Scroll (Locked by default unless overflow_x is 'auto' or 'scroll')
+        if self.style.get('overflow_x', 'hidden') in ('auto', 'scroll'):
+            self.scroll_x -= dx * scroll_speed
+            # Clamp X (TODO: Implement X clamping properly if needed)
+            max_scroll_x = max(0, self.content_width - self.computed_bounds['w'])
+            self.scroll_x = max(0, min(self.scroll_x, max_scroll_x))
+
+    def _clamp_scroll(self):
         max_scroll_y = max(0, self.content_height - self.computed_bounds['h'])
         self.scroll_y = max(0, min(self.scroll_y, max_scroll_y))
-        
-        # For X, similar logic if needed, but usually vertical scroll is primary
-        # max_scroll_x = max(0, self.content_width - self.computed_bounds['w'])
-        # self.scroll_x = max(0, min(self.scroll_x, max_scroll_x))
+
+    def on_mouse_move(self, x, y):
+        # Check hover on scrollbar
+        thumb_rect = self._get_scrollbar_rect()
+        if thumb_rect:
+            # Simple hit test
+            if (x >= thumb_rect['x'] and x <= thumb_rect['x'] + thumb_rect['w'] and
+                y >= thumb_rect['y'] and y <= thumb_rect['y'] + thumb_rect['h']):
+                self.scrollbar_hovered = True
+            else:
+                self.scrollbar_hovered = False
+                
+        # Handle Dragging
+        if self.is_dragging_scrollbar:
+            delta_y = y - self.drag_start_y
+            
+            # Calculate scroll delta based on track height
+            view_h = self.computed_bounds['h']
+            track_h = view_h
+            
+            if self.content_height > view_h:
+                # Ratio of scrollable content to viewport
+                # scroll_y / (content_h - view_h) = thumb_pos / (track_h - thumb_h)
+                
+                thumb_h = max(20, view_h * (view_h / self.content_height))
+                available_track = track_h - thumb_h
+                available_scroll = self.content_height - view_h
+                
+                if available_track > 0:
+                    scroll_ratio = delta_y / available_track
+                    self.scroll_y = self.scroll_start_y + (scroll_ratio * available_scroll)
+                    self._clamp_scroll()
+
+    def on_mouse_down(self, x, y):
+        if self.scrollbar_hovered:
+            self.is_dragging_scrollbar = True
+            self.drag_start_y = y
+            self.scroll_start_y = self.scroll_y
+            return True # Consume event
+
+    def on_mouse_up(self):
+        self.is_dragging_scrollbar = False
 
     def render(self, canvas, renderer):
         # 1. Draw Background/Border (using Box logic)
@@ -38,37 +95,6 @@ class ScrollView(Box):
         canvas.translate(-self.scroll_x, -self.scroll_y)
         
         # 4. Render Children
-        # We need to ensure children are positioned relative to the scroll view's origin
-        # The layout engine positions them absolutely on screen.
-        # But since we translate the canvas, we need to be careful.
-        # If children have absolute screen coordinates, translating canvas will shift them wrong 
-        # IF they were calculated assuming no scroll.
-        
-        # Actually, layout engine calculates 'x' and 'y' relative to parent's content box + parent pos.
-        # So children.y = parent.y + offset.
-        # If we translate canvas by -scroll_y, the child at parent.y will be drawn at parent.y - scroll_y.
-        # This is correct relative to the window origin?
-        # No. If we translate the canvas, everything drawn after is shifted.
-        # If we draw a rect at (100, 100) and translate by (0, -10), it draws at (100, 90).
-        # This is what we want for scrolling UP.
-        
-        # However, we need to make sure we don't translate the background (already drawn).
-        # We did save/restore around the children render.
-        
-        # One issue: Layout engine might not know about scroll content size?
-        # If ScrollView has fixed height, children might be laid out outside bounds?
-        # Yes, layout engine should just layout children as if they have space.
-        # But if ScrollView has fixed height, layout engine might constrain children?
-        # We need the ScrollView to act as an infinite height container for its children during layout?
-        # Or we use a inner "content" container?
-        
-        # For now, let's assume children are laid out normally. 
-        # If we want scroll, we usually put a big Box inside the ScrollView.
-        # The ScrollView itself has fixed size. The inner Box has auto size (which grows).
-        
-        # We need to capture the content size for clamping.
-        # We can calculate it from children bounds.
-        
         self._calculate_content_size()
         
         for child in self.children:
@@ -76,7 +102,7 @@ class ScrollView(Box):
             
         renderer.restore(canvas)
         
-        # Draw Scrollbar? (Optional)
+        # Draw Scrollbar
         self._draw_scrollbar(canvas, renderer)
 
     def _calculate_content_size(self):
@@ -91,20 +117,40 @@ class ScrollView(Box):
         self.content_height = max_y - self.computed_bounds['y']
         self.content_width = max_x - self.computed_bounds['x']
 
-    def _draw_scrollbar(self, canvas, renderer):
-        if self.content_height <= self.computed_bounds['h']: return
+    def _get_scrollbar_rect(self):
+        if self.content_height <= self.computed_bounds['h']: return None
         
-        # Simple scrollbar
         view_h = self.computed_bounds['h']
+        view_w = self.computed_bounds['w']
+        
+        # Calculate thumb height
         ratio = view_h / self.content_height
         thumb_h = max(20, view_h * ratio)
-        thumb_y = self.computed_bounds['y'] + (self.scroll_y / self.content_height) * view_h
         
-        thumb_rect = {
-            'x': self.computed_bounds['x'] + self.computed_bounds['w'] - 6,
+        # Calculate thumb position
+        # scroll_y / (content_h - view_h) = thumb_y_offset / (view_h - thumb_h)
+        max_scroll = self.content_height - view_h
+        if max_scroll > 0:
+            scroll_pct = self.scroll_y / max_scroll
+            thumb_y_offset = scroll_pct * (view_h - thumb_h)
+        else:
+            thumb_y_offset = 0
+            
+        thumb_y = self.computed_bounds['y'] + thumb_y_offset
+        
+        sb_width = self.style.get('scrollbar_width', 10)
+        
+        return {
+            'x': self.computed_bounds['x'] + view_w - sb_width,
             'y': thumb_y,
-            'w': 4,
+            'w': sb_width,
             'h': thumb_h
         }
+
+    def _draw_scrollbar(self, canvas, renderer):
+        rect = self._get_scrollbar_rect()
+        if not rect: return
         
-        renderer.draw_rect(canvas, thumb_rect, {'bg': '#ffffff40', 'radius': 2})
+        color = self.style.get('scrollbar_hover_color') if (self.scrollbar_hovered or self.is_dragging_scrollbar) else self.style.get('scrollbar_color')
+        
+        renderer.draw_rect(canvas, rect, {'bg': color, 'radius': rect['w']/2})

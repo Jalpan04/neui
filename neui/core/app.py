@@ -6,7 +6,14 @@ from .layout import compute_layout
 from .animation import animation_manager
 
 class App:
+    _instance = None
+
+    @classmethod
+    def get_instance(cls):
+        return cls._instance
+
     def __init__(self, title="NEUI App", width=800, height=600, theme="dark"):
+        App._instance = self
         if not glfw.init():
             raise RuntimeError("Could not initialize GLFW")
 
@@ -21,6 +28,7 @@ class App:
 
         # Windows Dark Mode Title Bar
         import sys
+        import os
         if sys.platform == 'win32':
             try:
                 import ctypes
@@ -36,6 +44,68 @@ class App:
                 )
             except Exception as e:
                 print(f"Failed to set dark mode title bar: {e}")
+
+        # Set Window Icon
+        try:
+            # Look for icon in assets folder relative to this file
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            icon_path = os.path.join(current_dir, '..', 'assets', 'neui.png')
+            
+            if os.path.exists(icon_path):
+                # Load image using Skia
+                original_image = skia.Image.MakeFromEncoded(skia.Data.MakeFromFileName(icon_path))
+                if original_image:
+                    icon_images = []
+                    # Create icons for standard sizes
+                    for size in [16, 32, 48]:
+                        # Create a surface for resizing
+                        surface = skia.Surface.MakeRasterN32Premul(size, size)
+                        canvas = surface.getCanvas()
+                        # Draw scaled image
+                        canvas.drawImageRect(
+                            original_image,
+                            skia.Rect.MakeWH(original_image.width(), original_image.height()),
+                            skia.Rect.MakeWH(size, size),
+                            skia.SamplingOptions(skia.FilterMode.kLinear)
+                        )
+                        # Get snapshot
+                        image = surface.makeImageSnapshot()
+                        
+                        # Get pixels as bytes
+                        w, h = size, size
+                        bitmap = skia.Bitmap()
+                        bitmap.allocPixels(skia.ImageInfo.Make(
+                            w, h, 
+                            skia.kRGBA_8888_ColorType, 
+                            skia.kUnpremul_AlphaType
+                        ))
+                        if image.readPixels(bitmap.info(), bitmap.getPixels(), bitmap.rowBytes(), 0, 0):
+                            flat_pixels = bitmap.tobytes()
+                            # Convert flat bytes to 3D list [y][x][rgba] for glfw wrapper
+                            # This is slow but necessary for the wrapper
+                            # pixels is RGBA (4 bytes per pixel)
+                            formatted_pixels = []
+                            for y in range(h):
+                                row = []
+                                for x in range(w):
+                                    i = (y * w + x) * 4
+                                    # glfw expects [r, g, b, a] (or whatever the wrapper expects, likely just values)
+                                    pixel = [
+                                        flat_pixels[i],
+                                        flat_pixels[i+1],
+                                        flat_pixels[i+2],
+                                        flat_pixels[i+3]
+                                    ]
+                                    row.append(pixel)
+                                formatted_pixels.append(row)
+                            
+                            icon_images.append((w, h, formatted_pixels))
+                    
+                    # Set window icon
+                    if icon_images:
+                        glfw.set_window_icon(self.window, len(icon_images), icon_images)
+        except Exception as e:
+            print(f"Failed to set window icon: {e}")
 
         glfw.make_context_current(self.window)
         

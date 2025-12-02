@@ -1,5 +1,7 @@
 # NEUI Documentation
 
+![NEUI Logo](neui.png)
+
 Complete API reference and usage guide for NEUI - the modern, GPU-accelerated Python UI framework.
 
 ## Table of Contents
@@ -135,17 +137,41 @@ Display text with custom styling.
 ```python
 ui.Text("Hello World", style={
     "font_size": 24,
-    "color": "#58A6FF",
-    "weight": "bold"
-})
+
+NEUI supports automatic text wrapping with three modes:
+
+```python
+# No wrapping (default)
+ui.Text("This text will not wrap", style={"wrap": "none"})
+
+# Word wrapping - breaks at word boundaries
+ui.Text(
+    "This is a long paragraph that will automatically wrap at word boundaries to fit within the specified width.",
+    style={
+        "wrap": "word",
+        "max_width": 300,
+        "line_height": 20
+    }
+)
+
+# Character wrapping - breaks at any character
+ui.Text(
+    "ThisTextWillWrapAtAnyCharacter",
+    style={
+        "wrap": "char",
+        "max_width": 200,
+        "line_height": 18
+    }
+)
 ```
 
-**Style Properties**:
-- `font_size`: Font size in pixels (default: 14)
-- `color`: Text color (hex string or color name)
-- `weight`: Font weight (`"normal"` or `"bold"`)
+**Wrapping Notes**:
+- If `wrap` is not `"none"`, you must specify `max_width`
+- `line_height` defaults to `font_size * 1.2` for comfortable spacing
+- Word wrapping respects word boundaries (spaces)
+- Character wrapping can break words mid-character for precise control
 
----
+
 
 ### Input
 
@@ -486,6 +512,37 @@ with drawer:
 drawer.open()
 drawer.close()
 ```
+
+---
+
+### Dropdown
+
+Select from a list of options.
+
+**Import**: `from neui import cui`
+
+**Parameters**:
+- `options` (list): List of options (strings)
+- `value` (str): Initial selected value
+- `on_change` (callable): Function called when selection changes
+- `style` (dict): Styling properties
+
+**Example**:
+```python
+def on_select(val):
+    print(f"Selected: {val}")
+
+cui.Dropdown(
+    options=["Option 1", "Option 2", "Option 3"],
+    value="Option 1",
+    on_change=on_select,
+    style={"w": 200}
+)
+```
+
+**Properties**:
+- `value`: Currently selected value
+- `options`: List of available options
 
 ---
 

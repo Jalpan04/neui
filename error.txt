@@ -1,0 +1,12 @@
+Error with count: 'int' object is not subscriptable
+Traceback (most recent call last):
+  File "C:\Users\acer\Desktop\python projects\neui\debug_glfw_icon.py", line 49, in test_glfw_icon
+    glfw.set_window_icon(window, 1, [(w, h, pixels)])
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\acer\AppData\Local\Programs\Python\Python313\Lib\site-packages\glfw\__init__.py", line 2733, in set_window_icon
+    _images[i].wrap(image)
+    ~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\acer\AppData\Local\Programs\Python\Python313\Lib\site-packages\glfw\__init__.py", line 275, in wrap
+    self.pixels_array[i][j][k] = pixels[i][j][k]
+                                 ~~~~~~~~~^^^
+TypeError: 'int' object is not subscriptable

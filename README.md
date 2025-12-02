@@ -1,5 +1,7 @@
 # NEUI
 
+![NEUI Logo](neui.png)
+
 **NEUI** is a modern, GPU-accelerated Python UI framework featuring a Flexbox-like layout engine, reactive event system, and beautiful default styling. Build desktop applications with the simplicity of web frameworks.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -13,6 +15,7 @@
 - **Interactive**: Full event system with Hover, Click, Focus, Blur, and Keyboard events
 - **Rich Components**: Pre-built UI and interactive components ready to use
 - **Pythonic API**: Context managers (`with` statements) for clean, nested layouts
+- **Automatic Text Wrapping**: Built-in support for word and character-based text wrapping
 - **Zero Boilerplate**: Minimal setup, maximum productivity
 
 ## Installation
@@ -129,6 +132,7 @@ Pre-styled, ready-to-use interactive widgets:
 | `Toggle` | Switch-style boolean input |
 | `ProgressBar` | Visual progress indicator |
 | `Drawer` | Slide-out panel for navigation |
+| `Dropdown` | Select from a list of options |
 | `ToastManager` | Notification system |
 
 ##  Styling System
@@ -219,7 +223,6 @@ python examples/form_example.py
 ## Known Limitations
 
 - Currently Windows-only (macOS and Linux support planned)
-- No built-in text wrapping (manual line breaks required)
 - Limited to OpenGL-compatible systems
 
 ## Contributing
