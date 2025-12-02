@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.3.5] - 2025-12-02
+## [0.3.6] - 2025-12-02
 
 ### Added
 - **Default Window Icon**: The NEUI logo is now set as the default window icon for all applications.
