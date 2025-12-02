@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neui"
-version = "0.2.1"
+version = "0.2.2"
 description = "A modern, GPU-accelerated Python UI framework with Flexbox-like layouts, reactive events, and beautiful default styling. Build desktop applications with the simplicity of web frameworks."
 readme = "README.md"
 authors = [
