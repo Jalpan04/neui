@@ -1,6 +1,7 @@
 # NEUI
 
-![NEUI Logo](neui.png)
+<img width="492" height="184" alt="neui logo" src="https://github.com/user-attachments/assets/5760f4a2-d14a-4676-955a-5519bedcdc4f" />
+
 
 **NEUI** is a modern, GPU-accelerated Python UI framework featuring a Flexbox-like layout engine, reactive event system, and beautiful default styling. Build desktop applications with the simplicity of web frameworks.
 
