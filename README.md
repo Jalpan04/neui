@@ -1,5 +1,7 @@
 # NEUI
 
+![GitHub top language](https://img.shields.io/github/languages/top/Jalpan04/neui) ![GitHub repo size](https://img.shields.io/github/repo-size/Jalpan04/neui) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 <img width="492" height="184" alt="neui logo" src="https://github.com/user-attachments/assets/5760f4a2-d14a-4676-955a-5519bedcdc4f" />
 
 
