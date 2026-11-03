@@ -52,6 +52,10 @@ class Input(Element):
         elif key == glfw.KEY_END:
             self.cursor_pos = len(self.text)
 
+    def on_keyrepeat(self, key, mods):
+        """Repeat supported key actions while a key is held."""
+        self.on_keydown(key, mods)
+
     def measure(self, parent_w, parent_h):
         # Intrinsic size
         font_size = self.style.get('font_size', 14)
