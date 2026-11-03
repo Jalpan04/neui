@@ -27,12 +27,14 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
 ]
 dependencies = [
-    "glfw",
-    "skia-python",
+    "glfw>=2.10",
+    "skia-python>=138",
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 
 [project.urls]
 "Homepage" = "https://github.com/Jalpan04/neui"
